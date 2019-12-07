@@ -1,13 +1,26 @@
 package encryptdecrypt;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
 
-        String algModeEncOrDec = "enc";
+        String algorithmMode = "enc";
         String text = "";
         String outputFilepath = null;
         String alg = "SHIFT";
         int key = 0;
+
+        if (args.length == 0) {
+            Scanner scn = new Scanner(System.in);
+            System.out.println("Type instructions: -mode, -key, -data, -in, -out, -alg, exit");
+            args = scn.nextLine().split(" ");
+            for (String val : args) {
+                if ("exit".equalsIgnoreCase(val)) {
+                    System.exit(0);
+                }
+            }
+        }
 
         //  input check
         if (args.length % 2 != 0) {
@@ -41,11 +54,11 @@ public class Main {
         // initialisation
         for (int i = 0; i < args.length; i++) {
 
-            if (args[i].equalsIgnoreCase("-mode")) {
+            if ("-mode".equalsIgnoreCase(args[i])) {
                 ++i;
-                algModeEncOrDec = args[i];
+                algorithmMode = args[i];
 
-            } else if (args[i].equalsIgnoreCase("-key")) {
+            } else if ("-key".equalsIgnoreCase(args[i])) {
                 ++i;
                 key = Integer.parseInt(args[i]);
 
@@ -57,7 +70,7 @@ public class Main {
                 ++i;
                 boolean dataArgFound = false;
                 for (String arg : args) {
-                    if (arg.equalsIgnoreCase("-data")) {
+                    if ("-data".equalsIgnoreCase(arg)) {
                         dataArgFound = true;
                         break;
                     }
@@ -69,15 +82,16 @@ public class Main {
             } else if ("-out".equalsIgnoreCase(args[i])) {
                 ++i;
                 outputFilepath = args[i];
+
             } else if ("-alg".equalsIgnoreCase(args[i])) {
                 ++i;
                 alg = args[i];
             }
         }
 
-        // encrypt or decrypt data
+        // encrypt/decrypt data
         EncDecAlgorithm algorithm = EncDecAlgorithmFactory.getAlgorithm(alg);
-        String data = algorithm.process(text, key, algModeEncOrDec);
+        String data = algorithm.process(text, key, algorithmMode);
 
         // output
         if (outputFilepath != null) {
